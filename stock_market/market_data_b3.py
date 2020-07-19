@@ -37,11 +37,11 @@ class IntraDayPriceB3:
                 "There is a date range limit of two weeks. After that the data is not acessible")
 
     def get_data(self, ticker):
-        self.df = self.df[["RptDt", "TckrSymb", "GrssTradAmt",
-                           "TradQty", "NtryTm", "TradId", "TradDt"]]
-        self.df.columns = ["report_date", "ticker", "price",
-                           "trade_quatity", "entry_time", "trade_id", "trade_date"]
-        self.df['price'] = (
-            self.df['price'].str.replace(',', '.')).astype(float)
+        data = self.df[["RptDt", "TckrSymb", "GrssTradAmt",
+                        "TradQty", "NtryTm", "TradId", "TradDt"]]
+        data.columns = ["report_date", "ticker", "price",
+                        "trade_quatity", "entry_time", "trade_id", "trade_date"]
+        data['price'] = (
+            data['price'].str.replace(',', '.')).astype(float)
 
-        return self.df[self.df["ticker"] == ticker]
+        return data[data["ticker"] == ticker]
