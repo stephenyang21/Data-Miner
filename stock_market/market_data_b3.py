@@ -1,7 +1,6 @@
 import requests
 import pandas as pd
 import numpy as np
-import datetime
 
 from io import BytesIO
 from zipfile import ZipFile
@@ -9,7 +8,9 @@ from urllib.request import urlopen
 
 
 class IntraDayPriceB3:
+
     def __init__(self,  date, stock=True, derivative=None):
+        # format date  YYYY-MM-DD
         self.stock = stock
         self.derivative = derivative
         self.date = date
@@ -17,17 +18,23 @@ class IntraDayPriceB3:
 
         self.df = None
 
+        self._load_data()
+
     def _load_data(self):
-        self.url = self.url.format(self.date)
-        _data = urlopen(self.url)
-        _zipfile = ZipFile(BytesIO(_data.read()))
+        try:
+            self.url = self.url.format(self.date)
+            _data = urlopen(self.url)
+            _zipfile = ZipFile(BytesIO(_data.read()))
 
-        with _zipfile.open(_zipfile.namelist()[0], 'r') as g:
-            self.df = pd.read_csv(g, sep=';')
+            with _zipfile.open(_zipfile.namelist()[0], 'r') as g:
+                self.df = pd.read_csv(g, sep=';')
 
-        if self.stock:
-            self.df = self.df[(self.df .TckrSymb.str.len() == 5)]
-        return self.df
+            if self.stock:
+                self.df = self.df[(self.df .TckrSymb.str.len() == 5)]
+            return self.df
+        except ValueError:
+            print(
+                "There is a date range limit of two weeks. After that the data is not acessible")
 
     def get_data(self, ticker):
         self.df = self.df[["RptDt", "TckrSymb", "GrssTradAmt",
