@@ -44,5 +44,4 @@ class IntraDayPriceB3:
         self.df['price'] = (
             self.df['price'].str.replace(',', '.')).astype(float)
 
-        self.df = self.df[self.df["ticker"] == ticker]
-        return self.df
+        return self.df[self.df["ticker"] == ticker]
